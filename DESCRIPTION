@@ -1,16 +1,24 @@
-Package: scryfallR
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Package: ScyfallR
+Title: A wrapper for the Scryfall API
+Version: 0.0.0.1000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to
-    pick a license
+    person(given = "Joshua",
+           family = "de la Bruere",
+           role = c("cre", "aut"),
+           email = "joshua@delabj.com")
+Description: A R interface to the Scryfall REST API.  
+    Scryfall provides a database of Magic The Gathering Cards with related
+    information. This package serves as a wrapper to the Scryfall API and 
+    is not endorsed or supported by Scryfall.
+License: MIT + file LICENSE
+URL: https://github.com/delabj/scryfallR
+BugReports: https://github.com/delabj/scryfallR/issues
+Imports: 
+    attempt,
+    curl,
+    httr,
+    jsonlite,
+    purrr
 Encoding: UTF-8
 LazyData: true
-Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.0.2
