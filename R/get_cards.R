@@ -243,4 +243,13 @@ return(jsonlite::fromJSON(rawToChar(res$content)))
 
 }
 
-
+## To Add
+# /cards/random
+# /cards/collection
+# /cards/:code/:number(/:lang)
+# /cards/multiverse/:id
+# /cards/mtgo/:id
+# /cards/arena/:id
+# /cards/tcgplayer/:id
+# /cards/cardmarket/:id
+# /cards/:id
