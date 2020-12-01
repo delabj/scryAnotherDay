@@ -19,7 +19,7 @@
 #' @details
 #'
 #' `unique`
-#'  This parameter specifies if Scryfall should remove “duplicate” results in your query. The options are:
+#'  This parameter specifies if Scryfall should remove duplicate results in your query. The options are:
 #'  - "cards" (default): Removes duplicate gameplay objects (cards that share a name and have the same functionality).
 #'  - "art" : Returns only one copy of each unique artwork for matching cards.
 #'  - "prints": Returns all prints for all cards matched (disables rollup).
@@ -42,16 +42,17 @@
 #'
 #' @return A list
 #'
+#' @export
 get_cards_by_search <- function(
-  q="*",
-  unique = "cards",
-  order = "name",
-  dir = "auto",
-  include_extras = FALSE,
+  q                  = "*",
+  unique             = "cards",
+  order              = "name",
+  dir                = "auto",
+  include_extras     = FALSE,
   include_variations = FALSE,
-  page = 1,
-  format = "json",
-  pretty = FALSE
+  page               = 1,
+  format             = "json",
+  pretty             = FALSE
 ){
 
   # checks
@@ -60,10 +61,12 @@ get_cards_by_search <- function(
   attempt::stop_if_not(include_extras, is.logical, "paramiter include_extras must be either TRUE or FALSE")
   attempt::stop_if_not(include_variations, is.logical, "paramiter include_variations must be either TRUE or FALSE")
   attempt::stop_if_not(page, is.numeric, "paramiter page must be an whole number")
-
-  # attempt unique in list
-  # attempt order in list
-  # attempt dir in list
+  stop_if_not_in(unique, c('cards', 'art', 'prints'), "`unique` must be one of c('cards', 'art', 'prints')" )
+  stop_if_not_in(order,
+                 c('name', 'set', 'released','rarity', 'usd', 'tix', 'eur', 'cmc', 'power', 'toughness', 'edhrec', 'artist'),
+                 "`order` must be one of c('name', 'set', 'released','rarity', 'usd', 'tix', 'eur', 'cmc', 'power', 'toughness', 'edhrec', 'artist')" )
+  stop_if_not_in(dir, c('auto', 'asc', 'desc'), "`dir must be on of c('auto', 'asc', 'desc')")
+    # attempt dir in list
 
 
   # convert to api formatting
@@ -86,35 +89,112 @@ get_cards_by_search <- function(
       include_variations = variations_search,
       page               = page,
       format             = format,
-      pretty             = pretty_search,
+      pretty             = pretty_search
+    )
+    )
 
-    )
-    )
+  check_status(res)
 
 
   if(format == "json"){
     return(jsonlite::fromJSON(rawToChar(res$content)))
   }
-  else if (
-
-  ){
+  else if (format == "csv"){
     return(readr::read_csv(rawToChar(res$content)))
-
   }
   else{
     usethis::ui_stop("There was an issue with the format. it should be either 'json' or 'csv'")
   }
-
-
-
-
-
 }
 
 #' Search for cards on Scryfall
-get_cards_by_name <- function(
+#'
+#' @description Returns a Card based on a name search string.
+#'
+#' @param q the card name to search for
+#' @param search_type is the search an "exact" or "fuzzy" search
+#' @param set set code to limit search to one set
+#' @param format The format to return the data in. "json", "CSV", "image"
+#' @param face The face that should be returned if format selected is "image"
+#' @param version The size of the image to return when using "image"
+#' @param pretty Should the JSON be prettified
+#'
+#' @export
 
+get_cards_by_name <- function(
+  q           = "Jace, the Mind Sculptor",
+  search_type = "exact",
+  set         = "",
+  format      = "json",
+  face        = "front",
+  version     = "large",
+  pretty      = FALSE
 ){
+  # Checks
+  attempt::stop_if(q, is.null, "You must specify a query")
+  attempt::stop_if_not(search_type, is.character, "`search_type` must be of type character")
+  stop_if_not_in(search_type, c('exact', 'fuzzy'), "`search_type` must be one of c('exact', 'fuzzy')")
+  attempt::stop_if_not(set, is.character, "`set`  must be of type character")
+  stop_if_not_in(format, c('json', 'csv', 'image'), "`format` must be one of c('json', 'csv', 'image')")
+  attempt::stop_if_not(face, is.character, "`face` must be of type character")
+  stop_if_not_in(face, c('front', 'back'), "`version` must be one of c('front', 'back')")
+  attempt::stop_if_not(version, is.character, "`version` must be of type character")
+  stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
+                 "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
+  attempt::stop_if_not(pretty, is.logical, "`pretty` must be either TRUE or FALSE")
+  check_internet()
+
+  # Convert to proper formatting
+  pretty_search <- ifelse(pretty, "true", "false")
+  q <- gsub(pattern = "[^[:alnum:][:space:]]", "", q)
+  q <- gsub(pattern = " ", "+", q)
+
+
+  if(search_type == "exact"){
+    res <- httr::GET(paste0(card_url, "/searched"),
+                     query = list(
+                       exact   = q,
+                       set     = set,
+                       format  = format,
+                       face    = face,
+                       version = version,
+                       pretty  = pretty_search
+                     )
+    )
+  }
+  else if(search_type == "fuzzy"){
+    res <- httr::GET(paste0(card_url, "/named"),
+                     query = list(
+                       fuzzy    = I(q),
+                       set     = set,
+                       format  = format,
+                       face    = face,
+                       version = version,
+                       pretty  = pretty_search
+                     )
+    )
+  }
+  else{
+    usethis::ui_stop("There was an issue with the search type it should be either 'exact' or 'fuzzy'")
+  }
+
+
+  check_status(res)
+
+
+  if(format == "json"){
+    return(jsonlite::fromJSON(rawToChar(res$content)))
+  }
+  else if (format == "csv"){
+    return(readr::read_csv(rawToChar(res$content)))
+  }
+  else if (format == "image"){
+    return((magick::image_read(res$content)))
+  }
+  else{
+    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
+  }
+
 
 }
 
@@ -153,6 +233,10 @@ get_cards_autocomplete <- function(
       q=q,
       pretty=pretty_search,
       include_extras = extras_search))
+
+
+  check_status(res)
+
 
 return(jsonlite::fromJSON(rawToChar(res$content)))
 

@@ -23,3 +23,17 @@ check_status <- function(res){
 
 
 
+#' stop if not in
+#' @importFrom usethis ui_stop
+#' @param var Name of var to check
+#' @param list list of acceptable options
+#' @param msg the warning message to display
+stop_if_not_in <- function(var, list, msg){
+  if(var %in% list){
+    return()
+  }
+  else{
+    usethis::ui_stop(msg)
+  }
+
+}

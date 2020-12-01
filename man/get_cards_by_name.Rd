@@ -4,8 +4,31 @@
 \alias{get_cards_by_name}
 \title{Search for cards on Scryfall}
 \usage{
-get_cards_by_name()
+get_cards_by_name(
+  q = "Jace, the Mind Sculptor",
+  search_type = "exact",
+  set = "",
+  format = "json",
+  face = "front",
+  version = "large",
+  pretty = FALSE
+)
+}
+\arguments{
+\item{q}{the card name to search for}
+
+\item{search_type}{is the search an "exact" or "fuzzy" search}
+
+\item{set}{set code to limit search to one set}
+
+\item{format}{The format to return the data in. "json", "CSV", "image"}
+
+\item{face}{The face that should be returned if format selected is "image"}
+
+\item{version}{The size of the image to return when using "image"}
+
+\item{pretty}{Should the JSON be prettified}
 }
 \description{
-Search for cards on Scryfall
+Returns a Card based on a name search string.
 }

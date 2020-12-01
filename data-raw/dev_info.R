@@ -42,6 +42,9 @@ use_package("jsonlite")
 use_package("curl")
 use_package("attempt")
 use_package("purrr")
+use_package("usethis")
+use_package("magick")
+use_package("readr")
 
 # Clean your description
 use_tidy_description()

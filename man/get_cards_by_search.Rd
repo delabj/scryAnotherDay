@@ -4,7 +4,17 @@
 \alias{get_cards_by_search}
 \title{Search for cards on Scryfall}
 \usage{
-get_cards_by_search()
+get_cards_by_search(
+  q = "*",
+  unique = "cards",
+  order = "name",
+  dir = "auto",
+  include_extras = FALSE,
+  include_variations = FALSE,
+  page = 1,
+  format = "json",
+  pretty = FALSE
+)
 }
 \arguments{
 \item{q}{the string query using Scryfall Syntax}
@@ -12,6 +22,18 @@ get_cards_by_search()
 \item{unique}{the rollup mode for removing duplicates. See details}
 
 \item{order}{the method to sort returned cards. See details}
+
+\item{dir}{direction to sort cards}
+
+\item{include_extras}{Should the search include extra cards (tokens, planes, vanguards, etc)}
+
+\item{include_variations}{Should rare card varients be included Defaults to false}
+
+\item{page}{the page to return defaults to 1}
+
+\item{format}{The format to return the data in. json or CSV}
+
+\item{pretty}{Should the JSON be prettified}
 }
 \value{
 A list
@@ -19,12 +41,31 @@ A list
 \description{
 Get a list of cards found using a fulltext search string.
 This string uses the same syntax as \href{https://scryfall.com/docs/syntax}{Scryfall's site}
+This is pagenated, returning a maximum of 175 cards at a time
 }
 \details{
-\code{unique} unique parameter specifies if Scryfall should remove “duplicate” results in your query. The options are:
+\code{unique}
+This parameter specifies if Scryfall should remove duplicate results in your query. The options are:
 \itemize{
 \item "cards" (default): Removes duplicate gameplay objects (cards that share a name and have the same functionality).
 \item "art" : Returns only one copy of each unique artwork for matching cards.
 \item "prints": Returns all prints for all cards matched (disables rollup).
+}
+
+\code{order}
+This parameter determines how Scryfall should sort the returned cards.
+\itemize{
+\item "name" (default): by card name
+\item "set": by their set and collector number
+\item "released": by release date
+\item "rarity": by card Rarity
+\item "usd": by card lowest known US dollar price
+\item "tix": by lowest known TIX price
+\item "eur": by lowest known Euro price
+\item "cmc": by converted mana cost
+\item "power": by power
+\item "toughness": by toughness
+\item "edhrec": by edhrec ranking
+\item "artist" by front side artist name
 }
 }
