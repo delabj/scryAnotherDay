@@ -243,8 +243,75 @@ return(jsonlite::fromJSON(rawToChar(res$content)))
 
 }
 
+#' Get Potential Card names
+#'
+#' @description Returns up to 20 full English card names that could
+#' autocomplete the supplied query string.
+#'
+#' @param q The query string
+#' @param format The format to return the data in. "json", "CSV", "image"
+#' @param face The face that should be returned if format selected is "image"
+#' @param version The size of the image to return when using "image"
+#' @param pretty Should the JSON be prettified
+#'
+#' @return A list
+#'
+#' @export
+get_cards_random <- function(
+  q       = "Jace",
+  format  = "json",
+  face    = "front",
+  version = "large",
+  pretty  = FALSE
+){
+  # checks
+  attempt::stop_if(q, is.null, "You must specify a query")
+  stop_if_not_in(format, c('json', 'csv', 'image'), "`format` must be one of c('json', 'csv', 'image')")
+  attempt::stop_if_not(face, is.character, "`face` must be of type character")
+  stop_if_not_in(face, c('front', 'back'), "`version` must be one of c('front', 'back')")
+  attempt::stop_if_not(pretty, is.logical, "paramiter pretty must be either TRUE or FALSE")
+  attempt::stop_if_not(version, is.character, "`version` must be of type character")
+  stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
+                 "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
+  attempt::stop_if_not(pretty, is.logical, "`pretty` must be either TRUE or FALSE")
+  check_internet()
+
+
+  # convert
+  pretty_search <- ifelse(pretty, "true", "false")
+
+
+  # Connect to the API
+  res <- httr::GET(
+    paste0(card_url, "/autocomplete"),
+    query = list(
+      q       = q,
+      format  = format,
+      face    = face,
+      version = version,
+      pretty  = pretty_search
+      )
+    )
+
+
+  check_status(res)
+
+
+  if(format == "json"){
+    return(jsonlite::fromJSON(rawToChar(res$content)))
+  }
+  else if (format == "csv"){
+    return(readr::read_csv(rawToChar(res$content)))
+  }
+  else if (format == "image"){
+    return((magick::image_read(res$content)))
+  }
+  else{
+    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
+  }
+
+}
 ## To Add
-# /cards/random
 # /cards/collection
 # /cards/:code/:number(/:lang)
 # /cards/multiverse/:id
