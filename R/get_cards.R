@@ -312,7 +312,7 @@ get_cards_random <- function(
 
 }
 ## To Add
-# /cards/collection
+# /cards/collection POST
 # /cards/:code/:number(/:lang)
 # /cards/multiverse/:id
 # /cards/mtgo/:id
