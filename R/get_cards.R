@@ -137,7 +137,7 @@ get_cards_by_name <- function(
   attempt::stop_if_not(set, is.character, "`set`  must be of type character")
   stop_if_not_in(format, c('json', 'csv', 'image'), "`format` must be one of c('json', 'csv', 'image')")
   attempt::stop_if_not(face, is.character, "`face` must be of type character")
-  stop_if_not_in(face, c('front', 'back'), "`version` must be one of c('front', 'back')")
+  stop_if_not_in(face, c('front', 'back'), "`face` must be one of c('front', 'back')")
   attempt::stop_if_not(version, is.character, "`version` must be of type character")
   stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
                  "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
@@ -243,10 +243,9 @@ return(jsonlite::fromJSON(rawToChar(res$content)))
 
 }
 
-#' Get Potential Card names
+#' Get  single random Card object
 #'
-#' @description Returns up to 20 full English card names that could
-#' autocomplete the supplied query string.
+#' @description Returns a single random Card object.
 #'
 #' @param q The query string
 #' @param format The format to return the data in. "json", "CSV", "image"
@@ -254,7 +253,6 @@ return(jsonlite::fromJSON(rawToChar(res$content)))
 #' @param version The size of the image to return when using "image"
 #' @param pretty Should the JSON be prettified
 #'
-#' @return A list
 #'
 #' @export
 get_cards_random <- function(
@@ -270,10 +268,11 @@ get_cards_random <- function(
   attempt::stop_if_not(face, is.character, "`face` must be of type character")
   stop_if_not_in(face, c('front', 'back'), "`version` must be one of c('front', 'back')")
   attempt::stop_if_not(pretty, is.logical, "paramiter pretty must be either TRUE or FALSE")
+  attempt::stop_if_not(face, is.character, "`face` must be of type character")
+  stop_if_not_in(face, c('front', 'back'), "`face` must be one of c('front', 'back')")
   attempt::stop_if_not(version, is.character, "`version` must be of type character")
   stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
                  "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
-  attempt::stop_if_not(pretty, is.logical, "`pretty` must be either TRUE or FALSE")
   check_internet()
 
 
@@ -283,7 +282,7 @@ get_cards_random <- function(
 
   # Connect to the API
   res <- httr::GET(
-    paste0(card_url, "/autocomplete"),
+    paste0(card_url, "/random"),
     query = list(
       q       = q,
       format  = format,
@@ -311,8 +310,79 @@ get_cards_random <- function(
   }
 
 }
+
+
+#' Get card by set code and colector number
+#'
+#' @param code the 3 to 5 letter set code
+#' @param number the collector number of the card (must be whole number)
+#' @param lang the 2 to 3 letter language code as described at https://scryfall.com/docs/api/languages
+#' @param format The format to return the data in. "json", "CSV", "image"
+#' @param face The face that should be returned if format selected is "image"
+#' @param version The size of the image to return when using "image"
+#' @param pretty Should the JSON be prettified
+#'
+#' @export
+get_card_by_code <- function(
+  code    = "wwk",
+  number  = 31,
+  lang    = "en",
+  format  = "json",
+  face    = "front",
+  version = "large",
+  pretty  = FALSE
+){
+
+  # checks
+  assertthat::assert_that( nchar(code) <=5 , nchar(code) >= 3,
+                           msg = "code must be a set code between 3 and 5 characters in length")
+  attempt::stop_if_not(number, is.numeric, "Number must be a number")
+  assertthat::assert_that(nchar(lang) <=3 , nchar(lang) >= 2,
+                            msg = "lang must be a language code between 2 and 3 characters in length")
+  stop_if_not_in(format, c('json', 'csv', 'image'), "`format` must be one of c('json', 'csv', 'image')")
+  attempt::stop_if_not(face, is.character, "`face` must be of type character")
+  stop_if_not_in(face, c('front', 'back'), "`version` must be one of c('front', 'back')")
+  attempt::stop_if_not(version, is.character, "`version` must be of type character")
+  stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
+                 "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
+  attempt::stop_if_not(pretty, is.logical, "`pretty` must be either TRUE or FALSE")
+
+
+  pretty_search <- ifelse(pretty, "true", "false")
+  check_internet()
+
+
+
+  res <- httr::GET(
+    paste(card_url, code, number, lang, sep = "/"),
+    query = list(
+      format  = format,
+      face    = face,
+      version = version,
+      pretty  = pretty_search
+    )
+  )
+
+
+  check_status(res)
+
+
+  if(format == "json"){
+    return(jsonlite::fromJSON(rawToChar(res$content)))
+  }
+  else if (format == "csv"){
+    return(readr::read_csv(rawToChar(res$content)))
+  }
+  else if (format == "image"){
+    return((magick::image_read(res$content)))
+  }
+  else{
+    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
+  }
+
+
+}
 ## To Add
-# /cards/collection POST
 # /cards/:code/:number(/:lang)
 # /cards/multiverse/:id
 # /cards/mtgo/:id
