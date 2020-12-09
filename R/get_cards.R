@@ -383,10 +383,11 @@ get_card_by_code <- function(
 
 }
 ## To Add
-# /cards/:code/:number(/:lang)
 # /cards/multiverse/:id
 # /cards/mtgo/:id
 # /cards/arena/:id
 # /cards/tcgplayer/:id
 # /cards/cardmarket/:id
 # /cards/:id
+
+# test git connection
