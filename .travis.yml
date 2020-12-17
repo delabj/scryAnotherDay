@@ -12,3 +12,4 @@ addons:
       - sourceline: 'ppa:opencpu/imagemagick'
     packages:
       - libmagick++-dev
+      - libgit2-dev
