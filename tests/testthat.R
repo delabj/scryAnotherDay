@@ -1,4 +1,4 @@
 library(testthat)
-library(ScyfallR)
+library(scryfallR)
 
 test_check("ScyfallR")
