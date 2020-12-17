@@ -45,6 +45,8 @@ use_package("purrr")
 use_package("usethis")
 use_package("magick")
 use_package("readr")
+use_package("assertthat")
+
 
 # Clean your description
 use_tidy_description()
