@@ -21,8 +21,6 @@ check_status <- function(res){
     )
 }
 
-
-
 #' stop if not in
 #' @importFrom usethis ui_stop
 #' @param var Name of var to check
