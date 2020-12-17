@@ -8,14 +8,7 @@ fortran: false
 addons:
   apt:
     update: true
+    sources:
+      - sourceline: 'ppa:opencpu/imagemagick'
     packages:
       - libmagick++-dev
-      - librsvg2-dev
-      - libwebp-dev
-      - libpoppler-cpp-dev
-      - libtesseract-dev
-      - libleptonica-dev
-      - tesseract-ocr-eng
-      - libfftw3-dev
-      - cargo
-      - gsfonts
