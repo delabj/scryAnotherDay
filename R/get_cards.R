@@ -44,67 +44,96 @@
 #'
 #' @export
 get_cards_by_search <- function(
-  q                  = "*",
-  unique             = "cards",
-  order              = "name",
-  dir                = "auto",
-  include_extras     = FALSE,
-  include_variations = FALSE,
-  page               = 1,
-  format             = "json",
-  pretty             = FALSE
-){
+                                q = "*",
+                                unique = "cards",
+                                order = "name",
+                                dir = "auto",
+                                include_extras = FALSE,
+                                include_variations = FALSE,
+                                page = 1,
+                                format = "json",
+                                pretty = FALSE) {
 
-  # checks
-  attempt::stop_if(q, is.null, "You must specify a query")
-  attempt::stop_if_not(pretty, is.logical, "paramiter pretty must be either TRUE or FALSE")
-  attempt::stop_if_not(include_extras, is.logical, "paramiter include_extras must be either TRUE or FALSE")
-  attempt::stop_if_not(include_variations, is.logical, "paramiter include_variations must be either TRUE or FALSE")
-  attempt::stop_if_not(page, is.numeric, "paramiter page must be an whole number")
-  stop_if_not_in(unique, c('cards', 'art', 'prints'), "`unique` must be one of c('cards', 'art', 'prints')" )
-  stop_if_not_in(order,
-                 c('name', 'set', 'released','rarity', 'usd', 'tix', 'eur', 'cmc', 'power', 'toughness', 'edhrec', 'artist'),
-                 "`order` must be one of c('name', 'set', 'released','rarity', 'usd', 'tix', 'eur', 'cmc', 'power', 'toughness', 'edhrec', 'artist')" )
-  stop_if_not_in(dir, c('auto', 'asc', 'desc'), "`dir must be on of c('auto', 'asc', 'desc')")
-    # attempt dir in list
+  #### checks ####
+  attempt::stop_if(
+    q,
+    is.null,
+    "You must specify a query"
+  )
+  attempt::stop_if_not(
+    pretty,
+    is.logical,
+    "paramiter pretty must be either TRUE or FALSE"
+  )
+  attempt::stop_if_not(
+    include_extras,
+    is.logical,
+    "paramiter include_extras must be either TRUE or FALSE"
+  )
+  attempt::stop_if_not(
+    include_variations,
+    is.logical,
+    "paramiter include_variations must be either TRUE or FALSE"
+  )
+  attempt::stop_if_not(
+    page,
+    is.numeric,
+    "paramiter page must be an whole number"
+  )
+  stop_if_not_in(
+    unique,
+    c("cards", "art", "prints"),
+    "`unique` must be one of c('cards', 'art', 'prints')"
+  )
+  stop_if_not_in(
+    order,
+    c("name", "set", "released", "rarity", "usd", "tix", "eur", "cmc", "power", "toughness", "edhrec", "artist"),
+    "`order` must be one of c('name', 'set', 'released','rarity', 'usd', 'tix', 'eur', 'cmc', 'power', 'toughness', 'edhrec', 'artist')"
+  )
+  stop_if_not_in(
+    dir,
+    c("auto", "asc", "desc"),
+    "`dir must be on of c('auto', 'asc', 'desc')"
+  )
 
 
-  # convert to api formatting
+  #### convert to api formatting ####
   pretty_search <- ifelse(pretty, "true", "false")
-  extras_search <- ifelse(include_extras,  "true", "false")
-  variations_search <- ifelse(include_variations,  "true", "false")
+  extras_search <- ifelse(include_extras, "true", "false")
+  variations_search <- ifelse(include_variations, "true", "false")
   page <- round(page)
 
 
 
-  # Connect to the API
+  #### Connect to the API ####
   res <- httr::GET(
     paste0(card_url, "/search"),
     query = list(
-      q                  = q,
-      unique             = unique,
-      order              = order,
-      dir                = dir,
-      include_extras     = extras_search,
+      q = q,
+      unique = unique,
+      order = order,
+      dir = dir,
+      include_extras = extras_search,
       include_variations = variations_search,
-      page               = page,
-      format             = format,
-      pretty             = pretty_search
+      page = page,
+      format = format,
+      pretty = pretty_search
     )
-    )
+  )
 
   check_status(res)
 
-
-  if(format == "json"){
+  #### Format the response ####
+  if (format == "json") {
     return(jsonlite::fromJSON(rawToChar(res$content)))
   }
-  else if (format == "csv"){
+  else if (format == "csv") {
     return(readr::read_csv(rawToChar(res$content)))
   }
-  else{
+  else {
     usethis::ui_stop("There was an issue with the format. it should be either 'json' or 'csv'")
   }
+  ##### END #####
 }
 
 #' Search for cards on Scryfall
@@ -122,59 +151,86 @@ get_cards_by_search <- function(
 #' @export
 
 get_cards_by_name <- function(
-  q           = "Jace, the Mind Sculptor",
-  search_type = "exact",
-  set         = "",
-  format      = "json",
-  face        = "front",
-  version     = "large",
-  pretty      = FALSE
-){
-  # Checks
-  attempt::stop_if(q, is.null, "You must specify a query")
-  attempt::stop_if_not(search_type, is.character, "`search_type` must be of type character")
-  stop_if_not_in(search_type, c('exact', 'fuzzy'), "`search_type` must be one of c('exact', 'fuzzy')")
-  attempt::stop_if_not(set, is.character, "`set`  must be of type character")
-  stop_if_not_in(format, c('json', 'csv', 'image'), "`format` must be one of c('json', 'csv', 'image')")
-  attempt::stop_if_not(face, is.character, "`face` must be of type character")
-  stop_if_not_in(face, c('front', 'back'), "`face` must be one of c('front', 'back')")
-  attempt::stop_if_not(version, is.character, "`version` must be of type character")
-  stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
-                 "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
-  attempt::stop_if_not(pretty, is.logical, "`pretty` must be either TRUE or FALSE")
+                              q = "Jace, the Mind Sculptor",
+                              search_type = "exact",
+                              set = "",
+                              format = "json",
+                              face = "front",
+                              version = "large",
+                              pretty = FALSE) {
+  #### Checks ####
+  attempt::stop_if(
+    q, is.null,
+    "You must specify a query"
+    )
+  attempt::stop_if_not(
+    search_type, is.character,
+    "`search_type` must be of type character"
+    )
+  stop_if_not_in(
+    search_type, c("exact", "fuzzy"),
+    "`search_type` must be one of c('exact', 'fuzzy')"
+    )
+  attempt::stop_if_not(
+    set, is.character,
+    "`set` must be of type character"
+    )
+  stop_if_not_in(
+    format, c("json", "csv", "image"),
+    "`format` must be one of c('json', 'csv', 'image')"
+    )
+  attempt::stop_if_not(
+    face, is.character,
+    "`face` must be of type character"
+    )
+  stop_if_not_in(
+    face, c("front", "back"),
+    "`face` must be one of c('front', 'back')"
+    )
+  attempt::stop_if_not(
+    version, is.character,
+    "`version` must be of type character"
+    )
+  stop_if_not_in(
+    version, c("small", "normal", "large", "png", "art_crop", "border_crop"),
+    "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')"
+  )
+  attempt::stop_if_not(
+    pretty, is.logical,
+    "`pretty` must be either TRUE or FALSE")
   check_internet()
 
-  # Convert to proper formatting
+  #### Convert to proper formatting ####
   pretty_search <- ifelse(pretty, "true", "false")
   q <- gsub(pattern = "[^[:alnum:][:space:]]", "", q)
   q <- gsub(pattern = " ", "+", q)
 
 
-  if(search_type == "exact"){
-    res <- httr::GET(paste0(card_url, "/searched"),
-                     query = list(
-                       exact   = q,
-                       set     = set,
-                       format  = format,
-                       face    = face,
-                       version = version,
-                       pretty  = pretty_search
-                     )
-    )
-  }
-  else if(search_type == "fuzzy"){
+  if (search_type == "exact") {
     res <- httr::GET(paste0(card_url, "/named"),
-                     query = list(
-                       fuzzy    = I(q),
-                       set     = set,
-                       format  = format,
-                       face    = face,
-                       version = version,
-                       pretty  = pretty_search
-                     )
+      query = list(
+        exact = q,
+        set = set,
+        format = format,
+        face = face,
+        version = version,
+        pretty = pretty_search
+      )
     )
   }
-  else{
+  else if (search_type == "fuzzy") {
+    res <- httr::GET(paste0(card_url, "/named"),
+      query = list(
+        fuzzy = I(q),
+        set = set,
+        format = format,
+        face = face,
+        version = version,
+        pretty = pretty_search
+      )
+    )
+  }
+  else {
     usethis::ui_stop("There was an issue with the search type it should be either 'exact' or 'fuzzy'")
   }
 
@@ -182,20 +238,18 @@ get_cards_by_name <- function(
   check_status(res)
 
 
-  if(format == "json"){
+  if (format == "json") {
     return(jsonlite::fromJSON(rawToChar(res$content)))
   }
-  else if (format == "csv"){
+  else if (format == "csv") {
     return(readr::read_csv(rawToChar(res$content)))
   }
-  else if (format == "image"){
+  else if (format == "image") {
     return((magick::image_read(res$content)))
   }
-  else{
+  else {
     usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
   }
-
-
 }
 
 #' Get Potential Card names
@@ -211,36 +265,35 @@ get_cards_by_name <- function(
 #'
 #' @export
 get_cards_autocomplete <- function(
-  q = "Jace, ",
-  pretty = FALSE,
-  include_extras = FALSE
-){
+                                   q = "Jace, ",
+                                   pretty = FALSE,
+                                   include_extras = FALSE) {
   # Checks
   attempt::stop_if(q, is.null, "You must specify a query")
   attempt::stop_if_not(pretty, is.logical, "paramiter pretty must be either TRUE or FALSE")
   attempt::stop_if_not(include_extras, is.logical, "paramiter include_extras must be either TRUE or FALSE")
-    check_internet()
+  check_internet()
 
 
 
   pretty_search <- ifelse(pretty, "true", "false")
-  extras_search <- ifelse(include_extras,  "true", "false")
+  extras_search <- ifelse(include_extras, "true", "false")
 
-# Connect to the API
+  # Connect to the API
   res <- httr::GET(
     paste0(card_url, "/autocomplete"),
     query = list(
-      q=q,
-      pretty=pretty_search,
-      include_extras = extras_search))
+      q = q,
+      pretty = pretty_search,
+      include_extras = extras_search
+    )
+  )
 
 
   check_status(res)
 
 
-return(jsonlite::fromJSON(rawToChar(res$content)))
-
-
+  return(jsonlite::fromJSON(rawToChar(res$content)))
 }
 
 #' Get  single random Card object
@@ -256,23 +309,24 @@ return(jsonlite::fromJSON(rawToChar(res$content)))
 #'
 #' @export
 get_cards_random <- function(
-  q       = "Jace",
-  format  = "json",
-  face    = "front",
-  version = "large",
-  pretty  = FALSE
-){
+                             q = "Jace",
+                             format = "json",
+                             face = "front",
+                             version = "large",
+                             pretty = FALSE) {
   # checks
   attempt::stop_if(q, is.null, "You must specify a query")
-  stop_if_not_in(format, c('json', 'csv', 'image'), "`format` must be one of c('json', 'csv', 'image')")
+  stop_if_not_in(format, c("json", "csv", "image"), "`format` must be one of c('json', 'csv', 'image')")
   attempt::stop_if_not(face, is.character, "`face` must be of type character")
-  stop_if_not_in(face, c('front', 'back'), "`version` must be one of c('front', 'back')")
+  stop_if_not_in(face, c("front", "back"), "`version` must be one of c('front', 'back')")
   attempt::stop_if_not(pretty, is.logical, "paramiter pretty must be either TRUE or FALSE")
   attempt::stop_if_not(face, is.character, "`face` must be of type character")
-  stop_if_not_in(face, c('front', 'back'), "`face` must be one of c('front', 'back')")
+  stop_if_not_in(face, c("front", "back"), "`face` must be one of c('front', 'back')")
   attempt::stop_if_not(version, is.character, "`version` must be of type character")
-  stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
-                 "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
+  stop_if_not_in(
+    version, c("small", "normal", "large", "png", "art_crop", "border_crop"),
+    "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')"
+  )
   check_internet()
 
 
@@ -284,31 +338,30 @@ get_cards_random <- function(
   res <- httr::GET(
     paste0(card_url, "/random"),
     query = list(
-      q       = q,
-      format  = format,
-      face    = face,
+      q = q,
+      format = format,
+      face = face,
       version = version,
-      pretty  = pretty_search
-      )
+      pretty = pretty_search
     )
+  )
 
 
   check_status(res)
 
 
-  if(format == "json"){
+  if (format == "json") {
     return(jsonlite::fromJSON(rawToChar(res$content)))
   }
-  else if (format == "csv"){
+  else if (format == "csv") {
     return(readr::read_csv(rawToChar(res$content)))
   }
-  else if (format == "image"){
+  else if (format == "image") {
     return((magick::image_read(res$content)))
   }
-  else{
+  else {
     usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
   }
-
 }
 
 
@@ -324,27 +377,30 @@ get_cards_random <- function(
 #'
 #' @export
 get_card_by_code <- function(
-  code    = "wwk",
-  number  = 31,
-  lang    = "en",
-  format  = "json",
-  face    = "front",
-  version = "large",
-  pretty  = FALSE
-){
+                             code = "wwk",
+                             number = 31,
+                             lang = "en",
+                             format = "json",
+                             face = "front",
+                             version = "large",
+                             pretty = FALSE) {
 
   # checks
-  assertthat::assert_that( nchar(code) <=5 , nchar(code) >= 3,
-                           msg = "code must be a set code between 3 and 5 characters in length")
+  assertthat::assert_that(nchar(code) <= 5, nchar(code) >= 3,
+    msg = "code must be a set code between 3 and 5 characters in length"
+  )
   attempt::stop_if_not(number, is.numeric, "Number must be a number")
-  assertthat::assert_that(nchar(lang) <=3 , nchar(lang) >= 2,
-                            msg = "lang must be a language code between 2 and 3 characters in length")
-  stop_if_not_in(format, c('json', 'csv', 'image'), "`format` must be one of c('json', 'csv', 'image')")
+  assertthat::assert_that(nchar(lang) <= 3, nchar(lang) >= 2,
+    msg = "lang must be a language code between 2 and 3 characters in length"
+  )
+  stop_if_not_in(format, c("json", "csv", "image"), "`format` must be one of c('json', 'csv', 'image')")
   attempt::stop_if_not(face, is.character, "`face` must be of type character")
-  stop_if_not_in(face, c('front', 'back'), "`version` must be one of c('front', 'back')")
+  stop_if_not_in(face, c("front", "back"), "`version` must be one of c('front', 'back')")
   attempt::stop_if_not(version, is.character, "`version` must be of type character")
-  stop_if_not_in(version, c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop'),
-                 "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')")
+  stop_if_not_in(
+    version, c("small", "normal", "large", "png", "art_crop", "border_crop"),
+    "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')"
+  )
   attempt::stop_if_not(pretty, is.logical, "`pretty` must be either TRUE or FALSE")
 
 
@@ -356,10 +412,10 @@ get_card_by_code <- function(
   res <- httr::GET(
     paste(card_url, code, number, lang, sep = "/"),
     query = list(
-      format  = format,
-      face    = face,
+      format = format,
+      face = face,
       version = version,
-      pretty  = pretty_search
+      pretty = pretty_search
     )
   )
 
@@ -367,23 +423,113 @@ get_card_by_code <- function(
   check_status(res)
 
 
-  if(format == "json"){
+  if (format == "json") {
     return(jsonlite::fromJSON(rawToChar(res$content)))
   }
-  else if (format == "csv"){
+  else if (format == "csv") {
     return(readr::read_csv(rawToChar(res$content)))
   }
-  else if (format == "image"){
+  else if (format == "image") {
     return((magick::image_read(res$content)))
   }
-  else{
+  else {
     usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
   }
-
-
 }
+
+#' Get card by Multiverse ID
+#'
+#' @md
+#' @description Get a single card by given Multiverse ID. If the card has multiple Multiverse IDs this method finds both of them.
+#' A Multiverse ID is the unique identifier from Wizards of the Coast's Gatherer database. In general it appears to be ordered as
+#' alphabetically by set release order with from Alpha starting at 94. It's likely that this is an incrementing integer key, with
+#' A few oddities.
+#'
+#' @param id Multiverse ID
+#' @param format The format to return the data in. "json", "CSV", "image"
+#' @param face The face that should be returned if format selected is "image"
+#' @param version The size of the image to return when using "image"
+#' @param pretty Should the JSON be prettified
+#'
+#' @return either a list, data frame, or image depending on `format`
+#' @export
+get_card_by_multiverse_id <- function(
+                                      id = 195297,
+                                      format = "json",
+                                      face = "front",
+                                      version = "large",
+                                      pretty = FALSE) {
+  # checks
+  attempt::stop_if_not(
+    id,
+    is.numeric,
+    msg = "id must be a number"
+  )
+  stop_if_not_in(
+    format,
+    c("json", "csv", "image"),
+    "`format` must be one of c('json', 'csv', 'image')"
+  )
+  attempt::stop_if_not(
+    face, is.character,
+    "`face` must be of type character"
+  )
+  stop_if_not_in(
+    face,
+    c("front", "back"),
+    "`version` must be one of c('front', 'back')"
+  )
+  attempt::stop_if_not(
+    version,
+    is.character,
+    "`version` must be of type character"
+  )
+  stop_if_not_in(
+    version,
+    c("small", "normal", "large", "png", "art_crop", "border_crop"),
+    "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')"
+  )
+  attempt::stop_if_not(
+    pretty,
+    is.logical,
+    "`pretty` must be either TRUE or FALSE"
+  )
+
+  pretty_search <- ifelse(pretty, "true", "false")
+  check_internet()
+
+
+
+  res <- httr::GET(
+    paste(card_url, "multiverse", id, sep = "/"),
+    query = list(
+      format = format,
+      face = face,
+      version = version,
+      pretty = pretty_search
+    )
+  )
+
+
+  check_status(res)
+
+
+  if (format == "json") {
+    return(jsonlite::fromJSON(rawToChar(res$content)))
+  }
+  else if (format == "csv") {
+    return(readr::read_csv(rawToChar(res$content)))
+  }
+  else if (format == "image") {
+    return((magick::image_read(res$content)))
+  }
+  else {
+    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
+  }
+}
+
+
 ## To Add
-# /cards/multiverse/:id
 # /cards/mtgo/:id
 # /cards/arena/:id
 # /cards/tcgplayer/:id
