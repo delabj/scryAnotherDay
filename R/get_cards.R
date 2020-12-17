@@ -205,7 +205,7 @@ get_cards_by_name <- function(
   q <- gsub(pattern = "[^[:alnum:][:space:]]", "", q)
   q <- gsub(pattern = " ", "+", q)
 
-
+  #### Get the API response ####
   if (search_type == "exact") {
     res <- httr::GET(paste0(card_url, "/named"),
       query = list(
@@ -237,7 +237,7 @@ get_cards_by_name <- function(
 
   check_status(res)
 
-
+  #### Send out the data ####
   if (format == "json") {
     return(jsonlite::fromJSON(rawToChar(res$content)))
   }
@@ -250,6 +250,7 @@ get_cards_by_name <- function(
   else {
     usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
   }
+  #### End ####
 }
 
 #' Get Potential Card names
