@@ -8,9 +8,9 @@ unlink("DESCRIPTION")
 my_desc <- description$new("!new")
 
 # Set your package name
-my_desc$set("Package", "ScyfallR")
+my_desc$set("Package", "ScryfallR")
 
-#Set your name
+# Set your name
 my_desc$set("Authors@R", "person('Joshua', 'de la Bruere', email = 'joshua@delabj.com', role = c('cre', 'aut'))")
 
 # Remove some author fields
@@ -23,7 +23,7 @@ my_desc$set_version("0.0.0.1000")
 my_desc$set(Title = "A wrapper for the Scryfall API")
 # The description of your package
 my_desc$set(Description = "A R interface to the Scryfall REST API.
-                Scryfall provides a database of Magic The Gathering Cards with related information." )
+                Scryfall provides a database of Magic The Gathering Cards with related information.")
 # The urls
 my_desc$set("URL", "https://github.com/delabj/scryfallR")
 my_desc$set("BugReports", "https://github.com/delabj/scryfallR/issues")
