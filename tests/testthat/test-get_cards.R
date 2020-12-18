@@ -47,3 +47,17 @@ testthat::test_that("get_cards_autocomplete fails if arguments are the the wrong
   testthat::expect_error(get_cards_autocomplete(pretty = "False"))
   testthat::expect_error(get_cards_autocomplete(include_extras = "False"))
 })
+
+# Tests for get_cards_random
+testthat::test_that(("get_cards_random fails without a query"), {
+  testthat::expect_error(get_cards_autocomplete(q = NULL))
+})
+
+testthat::test_that(("get_cards_random fails if arguments are the the wrong type"), {
+  testthat::expect_error(get_cards_autocomplete(format = 1))
+  testthat::expect_error(get_cards_autocomplete(face   = 1))
+  testthat::expect_error(get_cards_autocomplete(version = 1))
+  testthat::expect_error(get_cards_autocomplete(pretty = "FALSE"))
+
+
+})
