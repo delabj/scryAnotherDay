@@ -458,6 +458,7 @@ get_card_by_code <- function(
 #' @param face The face that should be returned if format selected is "image"
 #' @param version The size of the image to return when using "image"
 #' @param pretty Should the JSON be prettified
+#' @param id_type what kind of id is being provided See details for options.
 #'
 #' @details
 #' id_type

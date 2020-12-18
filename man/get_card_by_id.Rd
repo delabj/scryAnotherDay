@@ -23,6 +23,8 @@ get_card_by_id(
 \item{version}{The size of the image to return when using "image"}
 
 \item{pretty}{Should the JSON be prettified}
+
+\item{id_type}{what kind of id is being provided See details for options.}
 }
 \value{
 either a list, data frame, or image depending on \code{format}
