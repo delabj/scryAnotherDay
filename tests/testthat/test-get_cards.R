@@ -58,6 +58,21 @@ testthat::test_that(("get_cards_random fails if arguments are the the wrong type
   testthat::expect_error(get_cards_autocomplete(face   = 1))
   testthat::expect_error(get_cards_autocomplete(version = 1))
   testthat::expect_error(get_cards_autocomplete(pretty = "FALSE"))
+})
 
+# Tests for get_card_by_code
+testthat::test_that(("get_card_by_code fails if arguments are wrong size"), {
+  testthat::expect_error(get_card_by_code(code = "AA"))
+  testthat::expect_error(get_card_by_code(code = "AAAAAA"))
+  testthat::expect_error(get_card_by_code(code = "A"))
+  testthat::expect_error(get_card_by_code(code = "AAAA"))
 
+})
+
+testthat::test_that(("get_card_by_code fails if arguments are the the wrong type"), {
+  testthat::expect_error(get_card_by_code(number = "A"))
+  testthat::expect_error(get_card_by_code(format = 1))
+  testthat::expect_error(get_card_by_code(face   = 1))
+  testthat::expect_error(get_card_by_code(version = 1))
+  testthat::expect_error(get_card_by_code(pretty = "FALSE"))
 })
