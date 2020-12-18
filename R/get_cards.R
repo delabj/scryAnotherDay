@@ -162,42 +162,43 @@ get_cards_by_name <- function(
   attempt::stop_if(
     q, is.null,
     "You must specify a query"
-    )
+  )
   attempt::stop_if_not(
     search_type, is.character,
     "`search_type` must be of type character"
-    )
+  )
   stop_if_not_in(
     search_type, c("exact", "fuzzy"),
     "`search_type` must be one of c('exact', 'fuzzy')"
-    )
+  )
   attempt::stop_if_not(
     set, is.character,
     "`set` must be of type character"
-    )
+  )
   stop_if_not_in(
     format, c("json", "csv", "image"),
     "`format` must be one of c('json', 'csv', 'image')"
-    )
+  )
   attempt::stop_if_not(
     face, is.character,
     "`face` must be of type character"
-    )
+  )
   stop_if_not_in(
     face, c("front", "back"),
     "`face` must be one of c('front', 'back')"
-    )
+  )
   attempt::stop_if_not(
     version, is.character,
     "`version` must be of type character"
-    )
+  )
   stop_if_not_in(
     version, c("small", "normal", "large", "png", "art_crop", "border_crop"),
     "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')"
   )
   attempt::stop_if_not(
     pretty, is.logical,
-    "`pretty` must be either TRUE or FALSE")
+    "`pretty` must be either TRUE or FALSE"
+  )
   check_internet()
 
   #### Convert to proper formatting ####
@@ -366,7 +367,7 @@ get_cards_random <- function(
 }
 
 
-#' Get card by set code and colector number
+#' Get card by set code and collector number
 #'
 #' @param code the 3 to 5 letter set code
 #' @param number the collector number of the card (must be whole number)
@@ -438,34 +439,56 @@ get_card_by_code <- function(
   }
 }
 
-#' Get card by Multiverse ID
+
+
+#' Get card by ID
 #'
 #' @md
-#' @description Get a single card by given Multiverse ID. If the card has multiple Multiverse IDs this method finds both of them.
-#' A Multiverse ID is the unique identifier from Wizards of the Coast's Gatherer database. In general it appears to be ordered as
-#' alphabetically by set release order with from Alpha starting at 94. It's likely that this is an incrementing integer key, with
-#' A few oddities.
+#' @description Get a single card by it's given id from one of the following ID schemes:
+#' * multiverse
+#' * mtgo
+#' * arena
+#' * tcgplayer
+#' * cardmarket
+#' * scryfall
+#' See details for information about each of these ID systems.
 #'
-#' @param id Multiverse ID
+#' @param id Arena ID
 #' @param format The format to return the data in. "json", "CSV", "image"
 #' @param face The face that should be returned if format selected is "image"
 #' @param version The size of the image to return when using "image"
 #' @param pretty Should the JSON be prettified
+#' @param id_type what kind of id is being provided See details for options.
+#'
+#' @details
+#' id_type
+#' + 'multiverse': Get a single card by given Multiverse ID. If the card has multiple Multiverse IDs this method finds both of them.
+#' A Multiverse ID is the unique identifier from Wizards of the Coast's Gatherer database.
+#' + `mtgo': Get a single card by given it's MTGO ID, also known as Catalog ID. These can be either the mtgo_id or it's mtgo_foil_id.
+#' + 'arena': Get a single card given it's arena ID
+#' + 'tcgplayer:' Get a single card with the given tcgplayer_id, also known as the productId on TCGplayer’s API
+#' + 'cardmarket' Get a single card with the given cardmarket_id, also known as the idProduct" or the Product ID on Cardmarket’s APIs
+#' + 'scryfall' Get a single card with the given Scryfall ID
+#'
 #'
 #' @return either a list, data frame, or image depending on `format`
 #' @export
-get_card_by_multiverse_id <- function(
-                                      id = 195297,
-                                      format = "json",
-                                      face = "front",
-                                      version = "large",
-                                      pretty = FALSE) {
-  # checks
+get_card_by_id <- function(
+                           id = 195297,
+                           format = "json",
+                           face = "front",
+                           version = "large",
+                           pretty = FALSE,
+                           id_type = "multiverse") {
+  id_type <- tolower(id_type)
+
+  #### Checks ####
   attempt::stop_if_not(
     id,
     is.numeric,
     msg = "id must be a number"
   )
+
   stop_if_not_in(
     format,
     c("json", "csv", "image"),
@@ -495,14 +518,22 @@ get_card_by_multiverse_id <- function(
     is.logical,
     "`pretty` must be either TRUE or FALSE"
   )
-
-  pretty_search <- ifelse(pretty, "true", "false")
+  stop_if_not_in(
+    id_type,
+    c("multiverse", "mtgo", "mtgo_foil", "arena", "tcgplayer", "cardmarket", "scryfall"),
+    '`format` must be one of c("multiverse", "mtgo", "mtgo_foil", "arena", "tcgplayer", "cardmarket", "scryfall")'
+  )
   check_internet()
 
 
 
+  #### convert ####
+  pretty_search <- ifelse(pretty, "true", "false")
+
+
+  #### Connect to API ####
   res <- httr::GET(
-    paste(card_url, "multiverse", id, sep = "/"),
+    paste(card_url, id_type, id, sep = "/"),
     query = list(
       format = format,
       face = face,
@@ -514,7 +545,7 @@ get_card_by_multiverse_id <- function(
 
   check_status(res)
 
-
+  #### Return Results ####
   if (format == "json") {
     return(jsonlite::fromJSON(rawToChar(res$content)))
   }
@@ -527,14 +558,10 @@ get_card_by_multiverse_id <- function(
   else {
     usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
   }
+  #### END ####
 }
 
-
 ## To Add
-# /cards/mtgo/:id
-# /cards/arena/:id
 # /cards/tcgplayer/:id
 # /cards/cardmarket/:id
 # /cards/:id
-
-# test git connection

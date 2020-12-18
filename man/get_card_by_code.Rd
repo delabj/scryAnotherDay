@@ -2,7 +2,7 @@
 % Please edit documentation in R/get_cards.R
 \name{get_card_by_code}
 \alias{get_card_by_code}
-\title{Get card by set code and colector number}
+\title{Get card by set code and collector number}
 \usage{
 get_card_by_code(
   code = "wwk",
@@ -30,5 +30,5 @@ get_card_by_code(
 \item{pretty}{Should the JSON be prettified}
 }
 \description{
-Get card by set code and colector number
+Get card by set code and collector number
 }
