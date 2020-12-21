@@ -4,7 +4,7 @@ Joshua de la Bruere
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
-status](https://travis-ci.com/delabj/scryfallR.svg?branch=master)](https://travis-ci.com/delabj/scryfallR)
+status](https://travis-ci.com/delabj/scryAnotherDay.svg?branch=master)](https://travis-ci.com/delabj/scryfallR)
 
 {scryfalleR} (name likely to change) is an R package that wraps the
 [scryfall API](https://scryfall.com/docs/api/cards/mtgo). Scryfall is
