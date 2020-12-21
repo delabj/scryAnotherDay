@@ -1,4 +1,4 @@
 library(testthat)
-library(scryfallR)
+library(scryAnotherDay)
 
-test_check("scryfallR")
+test_check("scryAnotherDay")
