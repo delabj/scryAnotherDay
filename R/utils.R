@@ -34,3 +34,8 @@ stop_if_not_in <- function(var, list, msg) {
     usethis::ui_stop(msg)
   }
 }
+
+
+check_arguments <- function(...){
+  print(as.list(match.call(expand.dots = FALSE)))
+}
