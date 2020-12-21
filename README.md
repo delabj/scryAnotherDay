@@ -1,4 +1,4 @@
-scryfallR: R Interface to the Scryfall API
+scryAnotherDay: R Interface to the Scryfall API
 ================
 Joshua de la Bruere
 
@@ -6,7 +6,7 @@ Joshua de la Bruere
 [![Travis build
 status](https://travis-ci.com/delabj/scryAnotherDay.svg?branch=master)](https://travis-ci.com/delabj/scryfallR)
 
-{scryfalleR} (name likely to change) is an R package that wraps the
+{scryAnotherDay} is an R package that wraps the
 [scryfall API](https://scryfall.com/docs/api/cards/mtgo). Scryfall is
 the leading 3rd party database for finding Magic the Gathering card
 data, such as printings, prices, previews, and rulings.
@@ -18,8 +18,8 @@ can install this alpha version using devtools or remotes from this
 repository.
 
 ``` r
-devtools::install_github("delabj/scryfallr")
-remotes::install_github("delabj/scryfallr")
+devtools::install_github("delabj/scryAnotherDay")
+remotes::install_github("delabj/scryAnotherDay")
 ```
 
 This package is very much in the alpha stages, the API may change and
