@@ -1,5 +1,6 @@
 base_url <- "https://api.scryfall.com"
 card_url <- "https://api.scryfall.com/cards"
+cat_url <- "https://api.scryfall.com/catalog"
 
 
 
