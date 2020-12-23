@@ -575,7 +575,7 @@ get_card_by_id <- function(
 
   #### Return Results ####
   if (format == "json") {
-    return(jsonlite::fromJSON(rawToChar(res$content),encoding = "UTF-8"))
+    return(jsonlite::fromJSON(rawToChar(res$content)))
   }
   else if (format == "text") {
     return(rawToChar(res$content))
