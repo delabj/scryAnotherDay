@@ -459,6 +459,7 @@ get_card_by_code <- function(
 #' @param version The size of the image to return when using "image"
 #' @param pretty Should the JSON be prettified
 #' @param id_type what kind of id is being provided See details for options.
+#' @param rulings Boolean should the rulings for the card be returned?
 #'
 #' @details
 #' id_type

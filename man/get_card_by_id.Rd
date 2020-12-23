@@ -10,7 +10,8 @@ get_card_by_id(
   face = "front",
   version = "large",
   pretty = FALSE,
-  id_type = "multiverse"
+  id_type = "multiverse",
+  rulings = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ get_card_by_id(
 \item{pretty}{Should the JSON be prettified}
 
 \item{id_type}{what kind of id is being provided See details for options.}
+
+\item{rulings}{Boolean should the rulings for the card be returned?}
 }
 \value{
 either a list, data frame, or image depending on \code{format}
