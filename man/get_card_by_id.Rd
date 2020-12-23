@@ -17,7 +17,7 @@ get_card_by_id(
 \arguments{
 \item{id}{Arena ID}
 
-\item{format}{The format to return the data in. "json", "CSV", "image"}
+\item{format}{The format to return the data in. "json", "text", "image"}
 
 \item{face}{The face that should be returned if format selected is "image"}
 
