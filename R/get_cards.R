@@ -479,7 +479,8 @@ get_card_by_id <- function(
                            face = "front",
                            version = "large",
                            pretty = FALSE,
-                           id_type = "multiverse") {
+                           id_type = "multiverse",
+                           rulings = FALSE) {
   id_type <- tolower(id_type)
 
   #### Checks ####
@@ -523,6 +524,10 @@ get_card_by_id <- function(
     c("multiverse", "mtgo", "mtgo_foil", "arena", "tcgplayer", "cardmarket", "scryfall"),
     '`format` must be one of c("multiverse", "mtgo", "mtgo_foil", "arena", "tcgplayer", "cardmarket", "scryfall")'
   )
+  stop_if_not(
+    rulings,
+    is.logical,
+    "'rulings' must be either TRUE or FALSE")
   check_internet()
 
 
@@ -530,24 +535,46 @@ get_card_by_id <- function(
   #### convert ####
   pretty_search <- ifelse(pretty, "true", "false")
 
+  if(rulings){
+    if (format != "json") {
+      usethis::ui_warn(
+        paste0("Rulings only provided in JSON format changing '", format, "' to 'json")
+        )
 
-  #### Connect to API ####
-  res <- httr::GET(
-    paste(card_url, id_type, id, sep = "/"),
-    query = list(
+    }
+
+    query <- list(
+      format = format,
+      pretty = pretty_search
+    )
+
+    url <- paste(card_url, id_type, id, "rulings", sep = "/")
+  }
+  else{
+    url <- paste(card_url, id_type, id, sep = "/")
+    query <- list(
       format = format,
       face = face,
       version = version,
       pretty = pretty_search
     )
+  }
+
+
+
+  #### Connect to API ####
+  res <- httr::GET(
+    url = url,
+    query = query
   )
 
 
   check_status(res)
+  print(res$url)
 
   #### Return Results ####
   if (format == "json") {
-    return(jsonlite::fromJSON(rawToChar(res$content)))
+    return(jsonlite::fromJSON(rawToChar(res$content),encoding = "UTF-8"))
   }
   else if (format == "csv") {
     return(readr::read_csv(rawToChar(res$content)))
@@ -561,7 +588,3 @@ get_card_by_id <- function(
   #### END ####
 }
 
-## To Add
-# /cards/tcgplayer/:id
-# /cards/cardmarket/:id
-# /cards/:id
