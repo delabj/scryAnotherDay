@@ -575,10 +575,10 @@ get_card_by_id <- function(
 
   #### Return Results ####
   if (format == "json") {
-    return(jsonlite::fromJSON(rawToChar(res$content)))
+    return(jsonlite::fromJSON(httr::content(res, "text", encoding = "UTF-8")))
   }
   else if (format == "text") {
-    return(rawToChar(res$content))
+    return(httr::content(res, "text", encoding = "UTF-8"))
   }
   else if (format == "image") {
     return((magick::image_read(res$content)))
