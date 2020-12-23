@@ -454,7 +454,7 @@ get_card_by_code <- function(
 #' See details for information about each of these ID systems.
 #'
 #' @param id Arena ID
-#' @param format The format to return the data in. "json", "CSV", "image"
+#' @param format The format to return the data in. "json", "text", "image"
 #' @param face The face that should be returned if format selected is "image"
 #' @param version The size of the image to return when using "image"
 #' @param pretty Should the JSON be prettified
@@ -493,8 +493,8 @@ get_card_by_id <- function(
 
   stop_if_not_in(
     format,
-    c("json", "csv", "image"),
-    "`format` must be one of c('json', 'csv', 'image')"
+    c("json", "text", "image"),
+    "`format` must be one of c('json', 'text', 'image')"
   )
   attempt::stop_if_not(
     face, is.character,
@@ -577,14 +577,14 @@ get_card_by_id <- function(
   if (format == "json") {
     return(jsonlite::fromJSON(rawToChar(res$content),encoding = "UTF-8"))
   }
-  else if (format == "csv") {
-    return(readr::read_csv(rawToChar(res$content)))
+  else if (format == "text") {
+    return(rawToChar(res$content))
   }
   else if (format == "image") {
     return((magick::image_read(res$content)))
   }
   else {
-    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
+    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'text', or 'image")
   }
   #### END ####
 }
