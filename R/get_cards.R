@@ -376,6 +376,7 @@ get_cards_random <- function(
 #' @param face The face that should be returned if format selected is "image"
 #' @param version The size of the image to return when using "image"
 #' @param pretty Should the JSON be prettified
+#' @param rulings (Boolean) should the rulings for the card be returned?
 #'
 #' @export
 get_card_by_code <- function(
@@ -385,7 +386,9 @@ get_card_by_code <- function(
                              format = "json",
                              face = "front",
                              version = "large",
-                             pretty = FALSE) {
+                             pretty = FALSE,
+                             rulings = FALSE
+                             ) {
 
   # checks
   assertthat::assert_that(nchar(code) <= 5, nchar(code) >= 3,
@@ -404,21 +407,47 @@ get_card_by_code <- function(
     "`version` must be one of c('small', 'normal', 'large', 'png', 'art_crop', 'border_crop')"
   )
   attempt::stop_if_not(pretty, is.logical, "`pretty` must be either TRUE or FALSE")
-
-
-  pretty_search <- ifelse(pretty, "true", "false")
+  stop_if_not(
+    rulings,
+    is.logical,
+    "'rulings' must be either TRUE or FALSE"
+  )
   check_internet()
 
 
+  pretty_search <- ifelse(pretty, "true", "false")
 
-  res <- httr::GET(
-    paste(card_url, code, number, lang, sep = "/"),
-    query = list(
+
+  if(rulings){
+    if (format != "json") {
+      usethis::ui_warn(
+        paste0("Rulings only provided in JSON format changing '", format, "' to 'json")
+      )
+      format <- "json"
+    }
+
+    query <- list(
+      format = format,
+      pretty = pretty_search
+    )
+    url <- paste(card_url, code, number, "rulings", sep = "/")
+
+  }
+  else{
+    url <- paste(card_url, code, number, lang, sep = "/")
+    query <- list(
       format = format,
       face = face,
       version = version,
       pretty = pretty_search
     )
+  }
+
+
+
+  res <- httr::GET(
+    url = url,
+    query = query
   )
 
 
@@ -426,16 +455,16 @@ get_card_by_code <- function(
 
 
   if (format == "json") {
-    return(jsonlite::fromJSON(rawToChar(res$content)))
+    return(jsonlite::fromJSON(httr::content(res, "text", encoding = "UTF-8")))
   }
-  else if (format == "csv") {
-    return(readr::read_csv(rawToChar(res$content)))
+  else if (format == "text") {
+    return(httr::content(res, "text", encoding = "UTF-8"))
   }
   else if (format == "image") {
     return((magick::image_read(res$content)))
   }
   else {
-    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'csv', or 'image")
+    usethis::ui_stop("There was an issue with the format. it should be either 'json', 'text', or 'image")
   }
 }
 
@@ -528,7 +557,8 @@ get_card_by_id <- function(
   stop_if_not(
     rulings,
     is.logical,
-    "'rulings' must be either TRUE or FALSE")
+    "'rulings' must be either TRUE or FALSE"
+    )
   check_internet()
 
 
@@ -539,8 +569,9 @@ get_card_by_id <- function(
   if(rulings){
     if (format != "json") {
       usethis::ui_warn(
-        paste0("Rulings only provided in JSON format changing '", format, "' to 'json")
+        paste0("Rulings only provided in JSON format. Changing '", format, "' to 'json")
         )
+      format <- "json"
 
     }
 
