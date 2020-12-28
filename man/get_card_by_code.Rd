@@ -11,7 +11,8 @@ get_card_by_code(
   format = "json",
   face = "front",
   version = "large",
-  pretty = FALSE
+  pretty = FALSE,
+  rulings = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ get_card_by_code(
 \item{version}{The size of the image to return when using "image"}
 
 \item{pretty}{Should the JSON be prettified}
+
+\item{rulings}{(Boolean) should the rulings for the card be returned?}
 }
 \description{
 Get card by set code and collector number
