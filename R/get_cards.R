@@ -125,10 +125,10 @@ get_cards_by_search <- function(
 
   #### Format the response ####
   if (format == "json") {
-    return(jsonlite::fromJSON(rawToChar(res$content)))
+    return(jsonlite::fromJSON(httr::content(res, "text", encoding = "UTF-8")))
   }
   else if (format == "csv") {
-    return(readr::read_csv(rawToChar(res$content)))
+    return(readr::read_csv(httr::content(res, "text", encoding = "UTF-8")))
   }
   else {
     usethis::ui_stop("There was an issue with the format. it should be either 'json' or 'csv'")
@@ -240,10 +240,10 @@ get_cards_by_name <- function(
 
   #### Send out the data ####
   if (format == "json") {
-    return(jsonlite::fromJSON(rawToChar(res$content)))
+    return(jsonlite::fromJSON(httr::content(res, "text", encoding = "UTF-8")))
   }
   else if (format == "csv") {
-    return(readr::read_csv(rawToChar(res$content)))
+    return(readr::read_csv(httr::content(res, "text", encoding = "UTF-8")))
   }
   else if (format == "image") {
     return((magick::image_read(res$content)))
@@ -353,10 +353,10 @@ get_cards_random <- function(
 
 
   if (format == "json") {
-    return(jsonlite::fromJSON(rawToChar(res$content)))
+    return(jsonlite::fromJSON(httr::content(res, "text", encoding = "UTF-8")))
   }
   else if (format == "csv") {
-    return(readr::read_csv(rawToChar(res$content)))
+    return(readr::read_csv(httr::content(res, "text", encoding = "UTF-8")))
   }
   else if (format == "image") {
     return((magick::image_read(res$content)))
