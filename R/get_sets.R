@@ -3,7 +3,6 @@
 
 
 ## To Add
-# /sets/:code
 # /sets/tcgplayer/:id
 # /sets/:id
 
@@ -28,4 +27,38 @@ get_sets <- function(){
   attempt::stop_if_not(("data" %in% names(listed)), msg="Error in response from API")
 
   return(listed$data)
+}
+
+
+
+#' Get set by set code
+#'
+#' @description Retrieve set details using the set's 3-5 character code
+#'
+#' @param code the 3 to 5 letter set code
+#'
+#' @return a data.frame with set details
+#' @export
+get_set_by_code <- function(
+  code = "wwk"
+){
+
+  assertthat::assert_that(nchar(code) <= 5, nchar(code) >= 3,
+                          msg = "code must be a set code between 3 and 5 characters in length"
+  )
+
+  check_internet()
+
+
+  res <- httr::GET(
+    url = paste(set_url, code, sep = "/")
+  )
+
+  check_status(res)
+
+  listed <- jsonlite::fromJSON(httr::content(res, "text", encoding = "UTF-8"))
+  df <- as.data.frame(listed)
+
+  return(df)
+
 }

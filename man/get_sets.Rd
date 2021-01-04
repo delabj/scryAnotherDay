@@ -7,8 +7,8 @@
 get_sets()
 }
 \value{
-a list of sets
+a data.frame containing all listed sets
 }
 \description{
-Get a list of all sets
+Fetch a list of all sets, and their respective codes/IDs, release date, and set attributes.
 }
