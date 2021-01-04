@@ -18,7 +18,7 @@ get_sets <- function(){
   check_internet()
 
   res <- httr::GET(
-    url = "https://api.scryfall.com/sets"
+    url = set_url
   )
 
   check_status(res)
