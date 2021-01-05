@@ -1,7 +1,7 @@
 base_url <- "https://api.scryfall.com"
 card_url <- "https://api.scryfall.com/cards"
 cat_url <- "https://api.scryfall.com/catalog"
-
+set_url <- "https://api.scryfall.com/sets"
 
 
 #' @importFrom attempt stop_if_not
