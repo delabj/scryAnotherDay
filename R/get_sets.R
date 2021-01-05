@@ -1,11 +1,4 @@
 
-
-
-
-## To Add
-# /sets/tcgplayer/:id
-# /sets/:id
-
 #' Get a list of all sets
 #'
 #' @description Fetch a list of all sets, and their respective codes/IDs, release date, and set attributes.

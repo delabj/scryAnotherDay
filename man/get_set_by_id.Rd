@@ -4,7 +4,7 @@
 \alias{get_set_by_id}
 \title{Get set by set code}
 \usage{
-get_set_by_id(id, id_type = "scyfall")
+get_set_by_id(id, id_type = "scryfall")
 }
 \arguments{
 \item{id}{the 3 to 5 letter set code}
