@@ -62,3 +62,49 @@ get_set_by_code <- function(
   return(df)
 
 }
+
+
+
+#' Get set by set code
+#'
+#' @description Retrieve set details using the set's 3-5 character code
+#'
+#' @param id the 3 to 5 letter set code
+#' @param id_type the type of ID provided either "scryfall" or "tcgplayer"
+#'
+#' @return a data.frame with set details
+#' @export
+get_set_by_id <- function(
+  id,
+  id_type = "scryfall"
+){
+
+  stop_if_not_in(
+    id_type,
+    c("tcgplayer", "scryfall"),
+    '`id_type` must be one of c("tcgplayer", "scryfall")'
+  )
+
+  check_internet()
+
+  if(tolower(id_type) != "scryfall"){
+    url = paste(set_url,id_type, id, sep = "/")
+
+  }
+  else{
+    url = paste(set_url, id, sep = "/")
+  }
+
+
+  res <- httr::GET(
+    url = url
+  )
+
+  check_status(res)
+
+  listed <- jsonlite::fromJSON(httr::content(res, "text", encoding = "UTF-8"))
+  df <- as.data.frame(listed)
+
+  return(df)
+
+}
