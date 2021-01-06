@@ -58,11 +58,11 @@ get_set_by_code <- function(
 
 
 
-#' Get set by set code
+#' Get set by set ID
 #'
 #' @description Retrieve set details using the set's 3-5 character code
 #'
-#' @param id the 3 to 5 letter set code
+#' @param id the sets id
 #' @param id_type the type of ID provided either "scryfall" or "tcgplayer"
 #'
 #' @return a data.frame with set details
