@@ -6,7 +6,7 @@ Joshua de la Bruere
 
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
-status](https://travis-ci.com/delabj/scryfallR.svg?branch=master)](https://travis-ci.com/delabj/scryfallR)
+status](https://travis-ci.com/delabj/scryAnotherDay.svg?branch=master)](https://travis-ci.com/delabj/scryAnotherDay)
 [![R-CMD-check](https://github.com/delabj/scryAnotherDay/workflows/R-CMD-check/badge.svg)](https://github.com/delabj/scryAnotherDay/actions)
 <!-- badges: end -->
 
