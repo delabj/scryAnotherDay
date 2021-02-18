@@ -1,20 +1,24 @@
-scryAnotherDay: R Interface to the Scryfall API
+scryfallR: R Interface to the Scryfall API
 ================
 Joshua de la Bruere
 
+<!-- badges: start -->
+
 [![lifecycle](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![Travis build
-status](https://travis-ci.com/delabj/scryAnotherDay.svg?branch=master)](https://travis-ci.com/delabj/scryfallR)
+status](https://travis-ci.com/delabj/scryfallR.svg?branch=master)](https://travis-ci.com/delabj/scryfallR)
+[![R-CMD-check](https://github.com/delabj/scryAnotherDay/workflows/R-CMD-check/badge.svg)](https://github.com/delabj/scryAnotherDay/actions)
+<!-- badges: end -->
 
-{scryAnotherDay} is an R package that wraps the
+{scryfalleR} (name likely to change) is an R package that wraps the
 [scryfall API](https://scryfall.com/docs/api/cards/mtgo). Scryfall is
 the leading 3rd party database for finding Magic the Gathering card
 data, such as printings, prices, previews, and rulings.
 
 ## Installing The Package
 
-{scryfalleR} is currently in development and is very experimental. You
-can install this alpha version using devtools or remotes from this
+{scryAnotherDay} is currently in development and is very experimental.
+You can install this alpha version using devtools or remotes from this
 repository.
 
 ``` r
@@ -23,11 +27,9 @@ remotes::install_github("delabj/scryAnotherDay")
 ```
 
 This package is very much in the alpha stages, the API may change and
-breaking changes will be introduced. Use at your own risk while this is
-still experimental. The name is likely to change to be in accordance
-with the Scryfall Agreement. This package is not maintained nor endorsed
-this R package. If you have a suggestion for a name for the package,
-please open an issue, or [contact me directly](www.twitter.com/delabjl).
+breaking changes could be introduced. This package is not maintained nor
+endorsed by scryfall.com, but is build according to the rules provided
+in their licence.
 
 ## Rate Limits & Good Citizenship
 
