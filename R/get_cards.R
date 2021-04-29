@@ -90,6 +90,11 @@ get_cards_by_search <- function(
                                 format = "csv",
                                 pretty = FALSE) {
 
+  #### Send args to lower ####
+  order <- tolower(order)
+  dir <- tolower(dir)
+  format <- format(format)
+
   #### checks ####
   attempt::stop_if(
     q,
