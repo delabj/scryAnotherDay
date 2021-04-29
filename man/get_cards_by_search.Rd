@@ -12,14 +12,14 @@ get_cards_by_search(
   include_extras = FALSE,
   include_variations = FALSE,
   page = 1,
-  format = "json",
+  format = "csv",
   pretty = FALSE
 )
 }
 \arguments{
 \item{q}{the string query using Scryfall Syntax}
 
-\item{unique}{the rollup mode for removing duplicates. See details}
+\item{unique}{the roll-up mode for removing duplicates. See details}
 
 \item{order}{the method to sort returned cards. See details}
 
@@ -36,7 +36,7 @@ get_cards_by_search(
 \item{pretty}{Should the JSON be prettified}
 }
 \value{
-A list
+A list or data.frame depending on output selected
 }
 \description{
 Get a list of cards found using a fulltext search string.
@@ -47,7 +47,7 @@ This is pagenated, returning a maximum of 175 cards at a time
 \code{unique}
 This parameter specifies if Scryfall should remove duplicate results in your query. The options are:
 \itemize{
-\item "cards" (default): Removes duplicate gameplay objects (cards that share a name and have the same functionality).
+\item "cards" (default): Removes duplicate game-play objects (cards that share a name and have the same functionality).
 \item "art" : Returns only one copy of each unique artwork for matching cards.
 \item "prints": Returns all prints for all cards matched (disables rollup).
 }
@@ -68,4 +68,40 @@ This parameter determines how Scryfall should sort the returned cards.
 \item "edhrec": by edhrec ranking
 \item "artist" by front side artist name
 }
+}
+\examples{
+
+# Find Jace Planeswalker Cards
+
+jace_pw_cards <- get_cards_by_search(
+  'jace t:planeswalker',
+  include_variations = TRUE,
+  format = 'csv'
+)
+
+# Number Crunch lands between Creeping Tar Pit and Dark Depths
+
+  lands_poss <- get_cards_by_search(
+  'crunch>"creeping tar pit"
+  crunch<"dark depths"
+  f:vintage -in:ptk
+  not:reserved',
+  order = 'usd',
+  format = 'csv'
+)
+
+# Get unique arts of a Card
+
+unique_arts <- get_cards_by_search(
+  'stone rain',
+  format = 'csv',
+  unique = 'art'
+)
+
+#' unique_prints <- get_cards_by_search(
+  'giant spider',
+  format = 'json',
+  unique = 'prints'
+)
+
 }
