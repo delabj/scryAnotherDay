@@ -6,7 +6,7 @@
 \usage{
 get_cards_random(
   q = "Jace",
-  format = "json",
+  format = "csv",
   face = "front",
   version = "large",
   pretty = FALSE

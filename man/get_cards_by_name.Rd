@@ -8,7 +8,7 @@ get_cards_by_name(
   q = "Jace, the Mind Sculptor",
   search_type = "exact",
   set = "",
-  format = "json",
+  format = "csv",
   face = "front",
   version = "large",
   pretty = FALSE

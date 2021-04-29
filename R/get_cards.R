@@ -6,7 +6,7 @@
 #' This is pagenated, returning a maximum of 175 cards at a time
 #'
 #' @param q the string query using Scryfall Syntax
-#' @param unique the rollup mode for removing duplicates. See details
+#' @param unique the roll-up mode for removing duplicates. See details
 #' @param order the method to sort returned cards. See details
 #' @param dir direction to sort cards
 #' @param include_extras Should the search include extra cards (tokens, planes, vanguards, etc)
@@ -20,7 +20,7 @@
 #'
 #' `unique`
 #'  This parameter specifies if Scryfall should remove duplicate results in your query. The options are:
-#'  - "cards" (default): Removes duplicate gameplay objects (cards that share a name and have the same functionality).
+#'  - "cards" (default): Removes duplicate game-play objects (cards that share a name and have the same functionality).
 #'  - "art" : Returns only one copy of each unique artwork for matching cards.
 #'  - "prints": Returns all prints for all cards matched (disables rollup).
 #'
@@ -40,9 +40,45 @@
 #'  - "edhrec": by edhrec ranking
 #'  - "artist" by front side artist name
 #'
-#' @return A list
+#' @return A list or data.frame depending on output selected
 #'
 #' @export
+#'
+#' @examples
+#'
+#' # Find Jace Planeswalker Cards
+#'
+#' jace_pw_cards <- get_cards_by_search(
+#'   'jace t:planeswalker',
+#'   include_variations = TRUE,
+#'   format = 'csv'
+#' )
+#'
+#' # Number Crunch lands between Creeping Tar Pit and Dark Depths
+#'
+#'   lands_poss <- get_cards_by_search(
+#'   'crunch>"creeping tar pit"
+#'   crunch<"dark depths"
+#'   f:vintage -in:ptk
+#'   not:reserved',
+#'   order = 'usd',
+#'   format = 'csv'
+#' )
+#'
+#' # Get unique arts of a Card
+#'
+#' unique_arts <- get_cards_by_search(
+#'   'stone rain',
+#'   format = 'csv',
+#'   unique = 'art'
+#' )
+#'
+#' unique_prints <- get_cards_by_search(
+#'   'giant spider',
+#'   format = 'json',
+#'   unique = 'prints'
+#' )
+#'
 get_cards_by_search <- function(
                                 q = "*",
                                 unique = "cards",
@@ -51,8 +87,13 @@ get_cards_by_search <- function(
                                 include_extras = FALSE,
                                 include_variations = FALSE,
                                 page = 1,
-                                format = "json",
+                                format = "csv",
                                 pretty = FALSE) {
+
+  #### Send args to lower ####
+  order <- tolower(order)
+  dir <- tolower(dir)
+  format <- format(format)
 
   #### checks ####
   attempt::stop_if(
@@ -63,22 +104,22 @@ get_cards_by_search <- function(
   attempt::stop_if_not(
     pretty,
     is.logical,
-    "paramiter pretty must be either TRUE or FALSE"
+    "Parameter pretty must be either TRUE or FALSE"
   )
   attempt::stop_if_not(
     include_extras,
     is.logical,
-    "paramiter include_extras must be either TRUE or FALSE"
+    "Parameter include_extras must be either TRUE or FALSE"
   )
   attempt::stop_if_not(
     include_variations,
     is.logical,
-    "paramiter include_variations must be either TRUE or FALSE"
+    "Parameter include_variations must be either TRUE or FALSE"
   )
   attempt::stop_if_not(
     page,
     is.numeric,
-    "paramiter page must be an whole number"
+    "Parameter page must be an whole number"
   )
   stop_if_not_in(
     unique,
@@ -154,7 +195,7 @@ get_cards_by_name <- function(
                               q = "Jace, the Mind Sculptor",
                               search_type = "exact",
                               set = "",
-                              format = "json",
+                              format = "csv",
                               face = "front",
                               version = "large",
                               pretty = FALSE) {
@@ -272,8 +313,8 @@ get_cards_autocomplete <- function(
                                    include_extras = FALSE) {
   # Checks
   attempt::stop_if(q, is.null, "You must specify a query")
-  attempt::stop_if_not(pretty, is.logical, "paramiter pretty must be either TRUE or FALSE")
-  attempt::stop_if_not(include_extras, is.logical, "paramiter include_extras must be either TRUE or FALSE")
+  attempt::stop_if_not(pretty, is.logical, "Parameter pretty must be either TRUE or FALSE")
+  attempt::stop_if_not(include_extras, is.logical, "Parameter include_extras must be either TRUE or FALSE")
   check_internet()
 
 
@@ -312,7 +353,7 @@ get_cards_autocomplete <- function(
 #' @export
 get_cards_random <- function(
                              q = "Jace",
-                             format = "json",
+                             format = "csv",
                              face = "front",
                              version = "large",
                              pretty = FALSE) {
@@ -321,7 +362,7 @@ get_cards_random <- function(
   stop_if_not_in(format, c("json", "csv", "image"), "`format` must be one of c('json', 'csv', 'image')")
   attempt::stop_if_not(face, is.character, "`face` must be of type character")
   stop_if_not_in(face, c("front", "back"), "`version` must be one of c('front', 'back')")
-  attempt::stop_if_not(pretty, is.logical, "paramiter pretty must be either TRUE or FALSE")
+  attempt::stop_if_not(pretty, is.logical, "Parameter pretty must be either TRUE or FALSE")
   attempt::stop_if_not(face, is.character, "`face` must be of type character")
   stop_if_not_in(face, c("front", "back"), "`face` must be one of c('front', 'back')")
   attempt::stop_if_not(version, is.character, "`version` must be of type character")
@@ -383,7 +424,7 @@ get_card_by_code <- function(
                              code = "wwk",
                              number = 31,
                              lang = "en",
-                             format = "json",
+                             format = "csv",
                              face = "front",
                              version = "large",
                              pretty = FALSE,
@@ -505,7 +546,7 @@ get_card_by_code <- function(
 #' @export
 get_card_by_id <- function(
                            id = 195297,
-                           format = "json",
+                           format = "csv",
                            face = "front",
                            version = "large",
                            pretty = FALSE,
