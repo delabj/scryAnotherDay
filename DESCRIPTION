@@ -1,5 +1,5 @@
 Package: scryAnotherDay
-Title: A wrapper for the Scryfall API
+Title: A Wrapper for the Scryfall API
 Version: 0.0.0.1000
 Authors@R: 
     person(given = "Joshua",
