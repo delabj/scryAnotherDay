@@ -8,7 +8,7 @@ get_card_by_code(
   code = "wwk",
   number = 31,
   lang = "en",
-  format = "json",
+  format = "csv",
   face = "front",
   version = "large",
   pretty = FALSE,

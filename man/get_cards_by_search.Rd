@@ -98,7 +98,7 @@ unique_arts <- get_cards_by_search(
   unique = 'art'
 )
 
-#' unique_prints <- get_cards_by_search(
+unique_prints <- get_cards_by_search(
   'giant spider',
   format = 'json',
   unique = 'prints'

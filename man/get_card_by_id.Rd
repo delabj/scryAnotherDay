@@ -6,7 +6,7 @@
 \usage{
 get_card_by_id(
   id = 195297,
-  format = "json",
+  format = "csv",
   face = "front",
   version = "large",
   pretty = FALSE,
