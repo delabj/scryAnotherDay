@@ -27,20 +27,20 @@ remotes::install_github("delabj/scryAnotherDay")
 ```
 
 This package is very much in the alpha stages, the API may change and
-breaking changes could be introduced. This package is not maintained nor
+breaking changes may be introduced. This package is not maintained nor
 endorsed by scryfall.com, but is build according to the rules provided
-in their licence.
+in their license.
 
 ## Rate Limits & Good Citizenship
 
 In general Scryfall asks that you make no more than 10 requests per
-second, in addition they reccomend that you chache the data from
-scryfall once every 25 hours, in general though small updates are made
-per day, prices are only updated every 24 hours, and gameplay
-information like card names, Oracle text, and mana costs, are made on a
-significantly less frequent basis. If only looking at elements that are
-unlikely to update, it is encouraged that you process the data locally
-in your own database, and update far less frequently.
+second, in addition they recommend that you cache the data from scryfall
+once every 25 hours, in general though small updates are made per day,
+prices are only updated every 24 hours, and gameplay information like
+card names, Oracle text, and mana costs, are made on a significantly
+less frequent basis. If only looking at elements that are unlikely to
+update, it is encouraged that you process the data locally in your own
+database, and update far less frequently.
 
 ## Use of Scryfall data
 
