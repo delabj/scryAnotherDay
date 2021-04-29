@@ -190,7 +190,7 @@ get_cards_by_name <- function(
                               q = "Jace, the Mind Sculptor",
                               search_type = "exact",
                               set = "",
-                              format = "json",
+                              format = "csv",
                               face = "front",
                               version = "large",
                               pretty = FALSE) {
@@ -348,7 +348,7 @@ get_cards_autocomplete <- function(
 #' @export
 get_cards_random <- function(
                              q = "Jace",
-                             format = "json",
+                             format = "csv",
                              face = "front",
                              version = "large",
                              pretty = FALSE) {
@@ -419,7 +419,7 @@ get_card_by_code <- function(
                              code = "wwk",
                              number = 31,
                              lang = "en",
-                             format = "json",
+                             format = "csv",
                              face = "front",
                              version = "large",
                              pretty = FALSE,
@@ -541,7 +541,7 @@ get_card_by_code <- function(
 #' @export
 get_card_by_id <- function(
                            id = 195297,
-                           format = "json",
+                           format = "csv",
                            face = "front",
                            version = "large",
                            pretty = FALSE,
