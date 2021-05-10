@@ -4,12 +4,10 @@
 \alias{get_catalog}
 \title{Get a Scryfall Catalog}
 \usage{
-get_catalog(catalog = "card-names", pretty = FALSE)
+get_catalog(catalog = "card-names")
 }
 \arguments{
 \item{catalog}{Name of the catalog to fetch}
-
-\item{pretty}{Should the response be returned in the pretty JSON format}
 }
 \value{
 A list
