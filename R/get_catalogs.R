@@ -6,7 +6,6 @@
 #' values for a field on Card objects.
 #'
 #' @param catalog Name of the catalog to fetch
-#' @param pretty Should the response be returned in the pretty JSON format
 #'
 #' @return A list
 #'
@@ -39,14 +38,7 @@ get_catalog <- function(catalog = "card-names"){
       'keyword-actions','ability-words'
     )"
     )
-  attempt::stop_if_not(
-    pretty,
-    is.logical,
-    "paramiter pretty must be either TRUE or FALSE"
-  )
 
-  #### CONVERT ####
-  pretty_search <- ifelse(pretty, "true", "false")
 
   #### FETCH FROM API ####
 
