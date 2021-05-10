@@ -11,7 +11,7 @@
 #' @return A list
 #'
 #' @export
-get_catalog <- function(catalog = "card-names",  pretty = FALSE){
+get_catalog <- function(catalog = "card-names"){
 
   catalog <- tolower(catalog)
 
@@ -52,9 +52,6 @@ get_catalog <- function(catalog = "card-names",  pretty = FALSE){
 
   res <-httr::GET(
     paste(cat_url, catalog, sep="/"),
-    query = list(
-      pretty = pretty_search
-    )
   )
 
   #### Format the response ####
